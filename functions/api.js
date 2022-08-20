@@ -6,6 +6,12 @@ const router = express.Router();
 const { Twilio } = require('twilio')
 const twilio = require('twilio')
 
+const cors=require("cors");
+const corsOptions ={
+   origin:'*', 
+   credentials:true,            //access-control-allow-credentials:true
+   optionSuccessStatus:200,
+}
 
 
 
@@ -18,12 +24,18 @@ router.get('/sendMessage', (req,res) => {
     const authToken = '328d9eb0659e79b7287b4db7239a1eee'
 
     const client = new twilio(accountSid,authToken);
-    const { to } = req.query    
+    const { to,name,hospital,specialist,time,address } = req.query    
     
+  const hospitalUri = decodeURIComponent(hospital)
+  const timeUri = decodeURIComponent(time)
+  const specialistUri = decodeURIComponent(specialist)
+  const addressUri = decodeURIComponent(address)
+  const phoneUri = decodeURIComponent(to)
+  const nameUri = decodeURIComponent(name)
     client.messages
     .create({
-        body: 'Hello Your Appointment is fixed',
-        to: `+${to}`,
+        body: `Hello ${nameUri}, Your Appointment is fixed at ${hospitalUri} for ${specialistUri}.\nTimings are ${timeUri}.\nHospital Adrress: ${addressUri}`,
+        to: `+${phoneUri}`,
         from: '+16184149176',
     })
     .then((message) =>{
@@ -52,6 +64,8 @@ router.get('/doctors', (req,res) => {
     } 
     res.json(sortedDoctors);
 })
+
+
 
 
 app.use('/.netlify/functions/api', router)
