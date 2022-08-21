@@ -1,10 +1,12 @@
-const express = require('express')
+require('dotenv').config({path: "../.env"});
+const express = require('express');
 const app = express()
 const doctors = require('./data')
 const serverless = require('serverless-http')
 const router = express.Router();
 const { Twilio } = require('twilio')
 const twilio = require('twilio')
+
 
 const cors=require("cors");
 const corsOptions ={
@@ -14,14 +16,13 @@ const corsOptions ={
 }
 
 
-
     
 
 router.get('/sendMessage', (req,res) => {
     
 
-    const accountSid = 'AC01bde57a30f3f4fb75bab4ec7d14c5ba'
-    const authToken = '328d9eb0659e79b7287b4db7239a1eee'
+    const accountSid = process.env.SID;
+const authToken = process.env.AUTH;
 
     const client = new twilio(accountSid,authToken);
     const { to,name,hospital,specialist,time,address } = req.query    
